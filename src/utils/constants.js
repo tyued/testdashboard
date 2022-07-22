@@ -88,7 +88,7 @@ const paymentMethodInput = {
     children: [
       {
         id:'ebanx',
-        value: 'WeChat Pay',
+        value: 'ebanx',
         type: 'MULTI_SELECT_CONFIG',
         children:[
             {

@@ -1,4 +1,6 @@
 import Login from '../component/login';
+import Layout from '../layout';
+import DashBoard from '../component/dashboard';
 
 const Menu = [
     // {
@@ -43,9 +45,28 @@ const Menu = [
     // },
     {
         path: '/login',
-        title: 'Title',
+        title: 'login',
         element: <Login />,
         isMenu: false,
+    },
+    {
+        path:'/',
+        title: 'root',
+        element: <Layout />,
+        children:[
+            {
+                path:'dashboard',
+                title: 'DashBoard',
+                element: <DashBoard />,
+                isMenu: false,
+            },
+            {
+                path:'merchant',
+                title: 'Merchant Summary',
+                element: <DashBoard />,
+                isMenu: false,
+            },
+        ]
     }
     
 ]

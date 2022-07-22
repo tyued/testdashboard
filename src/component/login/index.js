@@ -1,57 +1,26 @@
 import React, { useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import css from './index.module.scss';
-import Form from '../../common/form';
+import { Button, Input, Form } from 'antd';
+import { MailOutlined, LockOutlined } from '@ant-design/icons';
 import { connect } from 'react-redux';
-// import Input from '../../common/formItem/Input';
-// import FormItem from '../../common/formItem';
-import { account_information, service, internal_status } from '../../utils/constants';
-import { merge, cloneDeep } from 'lodash';
 
-const Login = ({form, dispatch}) => {
-  
-  // const [merchant, setMerchant] = useState(defaultMerchant)
+import { useDebounce } from '../../utils/tools';
+import { login } from '../../api/index';
 
-  console.log(form.merchant, 'merchant');
-  // console.log(dispatch, '222')
+const Login = ({form, dispatch, location}) => {
+  const history = useNavigate();
+  const [isLoad, setIsLoad] = useState(false);
 
-  // const form = useRef(null);
-  // const form2 = useRef(null);
+  const handleLogin = useDebounce(async (values) => {
+    
+    let res = await login(values);
+    sessionStorage.setItem('hierarchyId', res.data.hierarchy);
+    sessionStorage.setItem('session_id', res.data.session_id);
+    sessionStorage.setItem('hierarchyName', res.data.hierarchyName);
+    history('/dashboard')
+  },500)
 
-  const handlGetValue = () => {
-    // console.log(form.current.getFieldValue('username'), 'form.current');
-    // console.log(merge(cloneDeep(form),{ 
-    //       merchant:{
-    //         internal_status:{
-    //           fd_number:'20'
-    //         }
-    //       }
-    //     })
-    // )
-    dispatch({type:'form/setState',payload:
-      merge(cloneDeep(form),{ 
-        merchant:{
-          internal_status:{
-            fd_number:'20'
-          }
-        }
-      })
-    })
-  }
-
-  const handlGetValue2 = () => {
-    // console.log(form.current.getFieldValue('username'), 'form.current');
-    dispatch({type:'form/setState',payload:
-      merge(cloneDeep(form),{ 
-        merchant:{
-          internal_status:{
-            jira_number:'r0'
-          }
-        }
-      })
-    })
-  }
-
-  console.log('render login~~')
   return (
     <div className={css.loginPage}>
       <div className={css.loginMain}>
@@ -60,45 +29,25 @@ const Login = ({form, dispatch}) => {
         </div>
         <div className={css.loginBox}>
           <div className={css.subTitle}>Sign in to start your session</div>
-          {/* <Form 
-            value={form.merchant.internal_status} 
-            formName={'merchant'}
-            id={'internal_status'}
-            fields={[...internal_status]}
-          >
-
-          </Form>
-
-          <Form 
-            value={form.merchant.account_info} 
-            formName={'merchant'}
-            id={'account_info'}
-            fields={[...account_information]}
-          >
-          </Form> */}
-
           <Form
-            value={form.merchant.service}
-            formName={'merchant'}
-            id={'service'}
-            fields={[...service]}
+            className='pt15'
+            name='loginForm'
+            onFinish={handleLogin}
           >
-
+            <Form.Item name='email'>
+              <Input addonAfter={<MailOutlined />} />
+            </Form.Item>
+            <Form.Item name='password'>
+              <Input.Password visibilityToggle={false} addonAfter={<LockOutlined />} />
+            </Form.Item>
+            <div>
+              <a>Forgot Your Password</a>
+            </div>
+            <div className='pt5 textCenter'>
+                <Button type='primary' htmlType="submit">Sign In</Button>
+            </div>
           </Form>
-          {/* <Form ref={form}>
-              <FormItem label='UserName' labelWidth={'.5rem'} name='username' required trigger='onChange'>
-                  <Input placeholder='please input username' />
-              </FormItem>
-          </Form> */}
-
-          {/* <Form ref={form2}>
-              <FormItem label='Task' labelWidth={'.5rem'} name='task' required trigger='onChange'>
-                  <Input placeholder='please input username' />
-              </FormItem>
-          </Form> */}
         </div>
-        <button onClick={handlGetValue}>Get Form Data</button>
-        <button onClick={handlGetValue2}>Get Form Data</button>
       </div>
     </div>
   )

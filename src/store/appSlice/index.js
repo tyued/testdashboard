@@ -3,7 +3,8 @@ import { createSlice } from '@reduxjs/toolkit';
 export const appSlice = createSlice({
     name: 'app',
     initialState: {
-        permission:[]
+        permission:[],
+        hierarchyTree:[],
     },
     reducers:{
         setState: (state, action) => {

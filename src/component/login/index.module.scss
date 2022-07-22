@@ -15,7 +15,15 @@
     }
     .loginBox{
         width: 100%;
-        padding: 20px;
+        padding: 15px 20px 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 20px rgba($color: #666, $alpha: 0.2);
         background: #FFF;
+        .subTitle{
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+            
+        }
     }
 }

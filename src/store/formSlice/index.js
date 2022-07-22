@@ -9,7 +9,7 @@ export const merchantSlice = createSlice({
     },
     reducers:{
         setState: (state, action) => {
-            console.log({...state, ...action.payload}, '{...state, ...action.payload}');
+            // console.log({...state, ...action.payload}, '{...state, ...action.payload}');
             return {...state, ...action.payload}
         },
         // getState

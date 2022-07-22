@@ -21,9 +21,9 @@ const Form = memo((({
     const onChange = useCallback(
         (sectionKey, val) => {
             // console.log(formValue, 'formValue');
-            // console.log(formName, 'formName');
-            console.log(sectionKey, 'sectionKey');
-            console.log(val, 'val');
+            // console.log(form, 'form-form');
+            // console.log(sectionKey, 'form-sectionKey');
+            // console.log(val, 'form-val');
             // dispatch({type:'form/setState',payload:
             //     merge(cloneDeep(form),{
             //         [formName]:{
@@ -34,7 +34,7 @@ const Form = memo((({
             //     })
             // })
         },
-        [dispatch, form, formName, id]
+        [form]
     )
     
     return (
@@ -53,6 +53,6 @@ const Form = memo((({
 const mapStateToProps = (state) => {
     const { form } = state;
     return { form };
-  }
+}
 
 export default connect(mapStateToProps)(Form)

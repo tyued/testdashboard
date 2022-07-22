@@ -17,15 +17,18 @@ const Input = memo(({
     }
 
     const handleChange = useCallback(
-        (e) => {
+        (id, e) => {
+            console.log(id, 'input-id');
+            console.log(e, 'input-e');
             switch (type) {
                 case 'MULTI_SELECT_CONFIG':
+                    onChange(id,[['ebanx','mexioc','oxxo']])
                     break;
                 default:
                     break;
             }    
         },
-        [type],
+        [type]
     )
     
 
@@ -38,7 +41,8 @@ const Input = memo(({
                     <div>{label}</div>
                     {children.map(item => {
                         return <div key={item.value}>
-                            <Checkbox onChange={(e)=>handleChange(id+'.'+item.id,e.target.checked)}> {item.value}</Checkbox>
+                            <Checkbox onChange={(e)=>handleChange(id+'.'+item.id, e)}> {item.value}</Checkbox>
+                            <div style={{paddingLeft:20}}>{item.children && <Input {...item} value={item.id} id={id+'.'+item.id} onChange={onChange}/>}</div>
                             
                             {/* <input type='checkbox' onChange={(e)=>onChange(id+'.'+item,e.target.checked)}/> {item.value} */}
                         </div>
