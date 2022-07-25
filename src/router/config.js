@@ -1,6 +1,7 @@
 import Login from '../component/login';
 import Layout from '../layout';
 import DashBoard from '../component/dashboard';
+import Merchant from '../component/merchant';
 
 const Menu = [
     // {
@@ -61,9 +62,9 @@ const Menu = [
                 isMenu: false,
             },
             {
-                path:'merchant',
+                path:'merchant/:mid',
                 title: 'Merchant Summary',
-                element: <DashBoard />,
+                element: <Merchant />,
                 isMenu: false,
             },
         ]

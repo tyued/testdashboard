@@ -43,6 +43,13 @@
             }
         }
     }
+    .outlet{
+        flex: 1;
+        padding: 20px;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+    }
 }
 .Layout_Left {
     width: 180px;

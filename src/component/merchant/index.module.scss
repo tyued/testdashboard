@@ -1,0 +1,40 @@
+:global {
+    .ant-radio-button-wrapper:first-child{
+        border-radius: 16px 0 0 16px;
+    }
+    .ant-radio-button-wrapper:last-child{
+        border-radius: 0 16px 16px 0;
+    }
+    .ant-table-thead{
+        tr th{
+            font-weight: bold;
+        }
+    }
+    .ant-table-tbody{
+        tr td{
+            font-size: 13px;
+        }
+    }
+}
+.merchantMain{
+    
+}
+.TabGroup{
+    margin-bottom: 10px;
+}
+.summaryTable{
+    width: 100%;
+    overflow: auto;
+    background: #FFF;
+    padding: 5px;
+    border-radius: 10px;
+    font-size: 12px;
+    .summaryTitle{
+        background: #f2f2f2;
+        margin-bottom: 5px;
+        padding: 10px;
+        color: #666;
+        font-size: 16px;
+        font-weight: bold;
+    }
+}

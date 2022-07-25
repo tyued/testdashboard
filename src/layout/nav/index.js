@@ -1,5 +1,5 @@
 import React, { memo, useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Menu, Tree } from 'antd';
 import { DashboardOutlined, ShopOutlined, ProfileOutlined } from '@ant-design/icons';
 import { connect } from 'react-redux';
@@ -20,7 +20,7 @@ const NavItem = memo(({to,children}) => {
 })
 
 const Nav = memo(({app, dispatch}) => {
-    
+    const history = useNavigate(); 
     const hierarchyId = sessionStorage.getItem('hierarchyId');
     const session_id = sessionStorage.getItem('session_id');
     const rootMerchant = sessionStorage.getItem('hierarchyName');
@@ -31,7 +31,6 @@ const Nav = memo(({app, dispatch}) => {
     
     // const { isLoading, isError, data, error } = useQuery(['getMultilayer',{parent_id: hierarchyId, session_id}], getMultilayer);tabc
 
-
     // console.log(app.hierarchyTree)
     
     const rootMenu = find(MenuList,{path:'/'}).children;
@@ -41,7 +40,7 @@ const Nav = memo(({app, dispatch}) => {
     // }
 
     const updateTreeData = (list, key, children) => {
-        console.log(list, 'list')
+        // console.log(list, 'list')
         return list.map((node) => {
             if (node.key == key) {
               return { ...node, children };
@@ -84,6 +83,16 @@ const Nav = memo(({app, dispatch}) => {
         // console.log(key, children)
         // return 
     }
+
+    const selectMerchant = (key, { selectedNodes, node }) => {
+        if(node.merchantId){
+            sessionStorage.setItem('curHierarchyId', key);
+            history(`/merchant/${node.merchantId}`);
+        }
+        console.log(key, 'key');
+        console.log(selectedNodes, 'selectedNodes');
+        console.log(node, 'node');
+    }
   
 
     useEffect(() => {
@@ -124,7 +133,7 @@ const Nav = memo(({app, dispatch}) => {
             </NavItem>
             {/* <NavItem><ShopOutlined /> <span className={css.title}>Merchant</span></NavItem> */}
 
-            <DirectoryTree rootClassName={css.Tree}  loadData={onLoadData} treeData={treeData} />
+            <DirectoryTree rootClassName={css.Tree} onSelect={selectMerchant} loadData={onLoadData} treeData={treeData} />
             
 
         </div>

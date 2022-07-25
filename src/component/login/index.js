@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import { useDebounce } from '../../utils/tools';
 import { login } from '../../api/index';
 
-const Login = ({form, dispatch, location}) => {
+const Login = ({form, dispatch}) => {
   const history = useNavigate();
   const [isLoad, setIsLoad] = useState(false);
 

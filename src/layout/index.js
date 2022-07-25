@@ -15,6 +15,9 @@ const Layout = memo(() => {
             <Header></Header>
             <div className={css.LayoutBody}>
                 <Nav></Nav>
+                <div className={css.outlet}>
+                    <Outlet />
+                </div>
             </div>
             {/* <div className={css.Layout_Left}>
                 <Nav className={css.Nav}></Nav>
