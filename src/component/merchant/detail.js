@@ -3,6 +3,7 @@ import { GlobalOutlined, CloseOutlined } from '@ant-design/icons';
 import { Button, Table } from 'antd';
 import css from './index.module.scss';
 import { getDetailReport } from '../../api/index';
+import { formatMoney } from '../../utils/tools';
 // import { useQuery } from 'react-query';
 
 const Detail = memo(({show, query, hideDetail}) => {
@@ -155,6 +156,16 @@ const Detail = memo(({show, query, hideDetail}) => {
                 </div>
                 <div className={css.detailTransactionTable}>
                     <Table {...detailProps}></Table>
+                    <div className={css.netSum}>
+                        <strong>Net of the day: {detail?.currency} {formatMoney(detail?.total_net)}</strong>
+                    </div>
+                    <div className={css.row}>
+                        <div className={css.explain}>
+                            <p>Please wait between 3-4 business days for payment to clear.Some payment methods could take a long time for payment to clear.</p>
+                            <p>Transaction ID*: Transaction ID indicates Citcon ID.<br/>
+                            Fee*: Service fee will be collected by Citcon later</p>
+                        </div>
+                    </div>
                 </div>
             </div>
             <Button type="primary" size='small' danger className={css.closeDetail} shape="circle" onClick={()=>hideDetail()} icon={<CloseOutlined />} />
