@@ -1,7 +1,8 @@
 .Layout {
     width: 100%;
     height: 100%;
-    background: rgba(250,250,250,1);
+    // background: rgba(250,250,250,1);
+    background: #ecf0f5;
     display: flex;
     flex-direction: column;
 }
@@ -9,30 +10,35 @@
     flex: 1;
     display: flex;
     flex-direction: row;
+    overflow: hidden;
     .Nav{
-        width: 200px;
+        width: 220px;
         height: 100%;
         padding-top: 15px;
+        background: #222d32;
         border-right: 1px solid #ddd;
         box-shadow: 3px 0 10px #e2e2e2;
+        overflow-y: auto;
+        overflow-x: hidden;
     }
     .NavItemBox{
         width: 100%;
         height: 45px;
         line-height: 45px;
-        font-size: 14px;
+        font-size: 12px;
         padding-left: 25px;
         display: block;
-        color: #555;
+        color: #b8c7ce;
         .title{
             padding-left: 5px;
         }
     }
     .Tree{
-        width: 200px;
-        background: #fafafa;
+        width: 220px;
+        background: #222d32;
         border-right: 1px solid #ddd;
-        color: #555;
+        color: #b8c7ce;
+        font-size: 12px;
         :global {
             .ant-tree-switcher {
                 display: none;
@@ -49,6 +55,7 @@
         width: 100%;
         height: 100%;
         overflow: auto;
+        overflow-x: hidden;
     }
 }
 .Layout_Left {
@@ -69,14 +76,15 @@
 .Header {
    width: 100%;
    height: 50px;
-   background: linear-gradient(to right, #6751A6, #6C73D4); 
+//    background: linear-gradient(to right, #6751A6, #6C73D4); 
+   background: #3c8dbc;
    color: #FFF;
    z-index: 1;
    .left_header{
-       width: 200px;
+       width: 220px;
        height: 100%;
        border-right: 1px solid rgba($color: #eee, $alpha: .4);
-       box-shadow: -3px 0 10px #6751A6 inset;
+       box-shadow: -3px 0 10px #3c8dbc inset;
        font-size: 24px;
        font-weight: bold;
        display: flex;
@@ -123,6 +131,29 @@
         .ant-menu-inline > .ant-menu-item ,.ant-menu-sub.ant-menu-inline > .ant-menu-item,.ant-menu-inline > .ant-menu-submenu > .ant-menu-submenu-title{
             height: 60px;
             line-height: 60px;
+        }
+        .ant-tree-treenode{
+            height: 35px;
+            line-height: 35px;
+        }
+        .ant-tree.ant-tree-block-node .ant-tree-list-holder-inner .ant-tree-node-content-wrapper{
+            line-height: 35px;
+        }
+        .ant-tree .ant-tree-node-content-wrapper .ant-tree-iconEle{
+            line-height: 35px;
+        }
+        .ant-tree.ant-tree-directory .ant-tree-treenode::before{
+            bottom: 0;
+        }
+        .ant-tree.ant-tree-directory .ant-tree-treenode-selected:hover::before, .ant-tree.ant-tree-directory .ant-tree-treenode-selected::before {
+            background: #1a2226;
+        }
+        .ant-tree-treenode:hover{
+            height: 35px;
+            background: #1a2226;
+            &::before{
+                display: none;
+            }
         }
     }
 }

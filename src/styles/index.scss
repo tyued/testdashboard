@@ -6,6 +6,7 @@
 html, body {
     width: 100%;
     height: 100%;
+    font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 #root{
     width: 100%;
@@ -20,5 +21,8 @@ html, body {
 .pt5{
     padding-top: 5px;
 }
-
+.linkSpan{
+    color: #3c8dbc;
+    cursor: pointer;
+}
 

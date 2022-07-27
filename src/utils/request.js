@@ -8,7 +8,7 @@ export default function request(url, options) {
     return fetch(`${url}`, options)
         .catch(handleError)
         .then((response) => {
-            console.log(response, 'response')
+            // console.log(response, 'response')
             if(response.status === 200){
                 // success(response.data);
                 return{ data: response.data}

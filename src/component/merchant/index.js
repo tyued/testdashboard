@@ -1,10 +1,12 @@
-import React, { useState, useEffect, memo } from 'react';
+import React, { useState, useEffect, useCallback, memo } from 'react';
+import { unstable_batchedUpdates as batchedUpdates } from 'react-dom';
 import { useParams } from 'react-router-dom';
 import { Radio, Table, Tag } from 'antd';
 import css from './index.module.scss';
 import { getSummaryList, getTransactionsList } from '../../api/index';
 import { formatMoney } from '../../utils/tools';
 import { reject } from 'lodash';
+import Detail from './detail';
 
 
 const Merchant = memo((props) => {
@@ -16,8 +18,8 @@ const Merchant = memo((props) => {
             // dataIndex: 'date_month',
             key: 'date_month',
             width:'250px',
-            render: ({date_month}) => {
-                return <span onClick={showDetail}>{date_month}</span>
+            render: (row) => {
+                return <span className='linkSpan' onClick={()=>showDetail(row)}>{row.date_month}</span>
             },
             fixed: 'left',
         },{
@@ -137,9 +139,38 @@ const Merchant = memo((props) => {
     
     const [searchType, setSearchType] = useState('daily');
     const [columns, setColumns] = useState(DailyColumns);
-    const [dataList, setDataList] = useState([])
+    const [dataList, setDataList] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [detailProps,setDetailProps] = useState({show: false});
 
-    const showDetail = () => {
+    const hideDetail = useCallback(
+      () => {
+        setDetailProps((prop)=>{
+            // console.log({...prop,show:true})
+            return {...prop, show:false}
+        })
+      },
+      [],
+    )
+    
+    const showDetail = (rowDetail) => {
+        // console.log(rowDetail, '2223213132')
+        setDetailProps((prop)=>{
+            console.log({...prop,show:true})
+            return {
+                ...prop, 
+                show:true,
+                query:{
+                    type: searchType==='daily' ? 'daily' : 'monthly',
+                    merchantId: mid,
+                    is_isv: rowDetail.is_isv ? true : false,
+                    sessionId: sessionStorage.getItem('session_id'),
+                    date: rowDetail.db_year_month,
+                    month: rowDetail.db_year_month,
+                }, 
+                hideDetail
+            }
+        })
         console.log('显示详情')
     }
 
@@ -150,6 +181,7 @@ const Merchant = memo((props) => {
     }
 
     const getSummary  = async () => {
+        setLoading(true);
         let params = {
             date_month: '',
             hierarchy_user_id: sessionStorage.getItem('curHierarchyId'),
@@ -160,11 +192,15 @@ const Merchant = memo((props) => {
             session_id: sessionStorage.getItem('session_id'),
         }
         let res = await getSummaryList(params);
-        setColumns(DailyColumns);
-        setDataList(res.data.transactions);
+        batchedUpdates(async ()=>{
+            setDataList(res.data.transactions);
+            setColumns(DailyColumns);
+            setLoading(false);
+        })
     }
 
     const getTransactions = async () => {
+        setLoading(true);
         let params = {
             startDate: "",
             endDate: "",
@@ -177,14 +213,18 @@ const Merchant = memo((props) => {
             sessionId: sessionStorage.getItem('session_id'),
         }
         let res = await getTransactionsList(params);
-        setColumns(LookupColumns);
-        setDataList(res.data.transactions);
+        batchedUpdates(async ()=>{
+            setDataList(res.data.transactions);
+            setColumns(LookupColumns);
+            setLoading(false);
+        })
     }
 
     const tableProps = {
         columns: reject(columns, (o) => {
             return o.disableDependency?.includes(searchType)
         }),
+        loading: loading,
         dataSource: dataList,
         size: 'small',
         rowKey: (record, index) => index,
@@ -192,6 +232,8 @@ const Merchant = memo((props) => {
             x: searchType==='lookup'? 3000 : 1500,
         },
     }
+
+    
 
     useEffect(() => {
         if(['daily','monthly'].includes(searchType)) {
@@ -204,18 +246,23 @@ const Merchant = memo((props) => {
     
     
     return (
-        <div className={css.merchantMain}>
-            <Radio.Group className={css.TabGroup} value={searchType} onChange={(e)=>changeType(e)} buttonStyle="solid">
-                <Radio.Button key={'daily'} value="daily">Daily Summary</Radio.Button>
-                <Radio.Button key={'monthly'} value="monthly">Monthly Summary</Radio.Button>
-                <Radio.Button key={'lookup'} value="lookup">Transaction Lookup</Radio.Button>
-                <Radio.Button key={'daily_settle'} value="daily_settle">Daily Settle Summary</Radio.Button>
-                <Radio.Button key={'daily_dispute'} value="daily_dispute">Dispute Summary</Radio.Button>
-            </Radio.Group>
-            <div className={css.summaryTable}>
-                <div className={css.summaryTitle}>{searchType} summary</div>
-              <Table {...tableProps} />
+        <div className={css.posMain}>
+            <div className={css.merchantMain}>
+                <Radio.Group className={css.TabGroup} value={searchType} onChange={(e)=>changeType(e)} buttonStyle="solid">
+                    <Radio.Button key={'daily'} value="daily">Daily Summary</Radio.Button>
+                    <Radio.Button key={'monthly'} value="monthly">Monthly Summary</Radio.Button>
+                    <Radio.Button key={'lookup'} value="lookup">Transaction Lookup</Radio.Button>
+                    <Radio.Button key={'daily_settle'} value="daily_settle">Daily Settle Summary</Radio.Button>
+                    <Radio.Button key={'daily_dispute'} value="daily_dispute">Dispute Summary</Radio.Button>
+                </Radio.Group>
+                <div className={css.summaryTable}>
+                    <div className={css.summaryTitle}>{searchType} summary</div>
+                <Table {...tableProps} />
+                </div>
             </div>
+
+            <Detail {...detailProps}></Detail>
+
         </div>
     )
 })

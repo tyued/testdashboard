@@ -31,4 +31,17 @@ export async function getTransactionsList(data) {
     })
 }
 
+export async function getDetailReport(data) {
+    let detailURL;
+    if (data.type==='daily'){
+        detailURL = 'detail_daily_report';
+    } else {
+        detailURL = 'detail_month_report';
+    }
+    return request(`${root}/${base}/${detailURL}`,{
+        method: 'post',
+        data,
+    })
+}
+
 
