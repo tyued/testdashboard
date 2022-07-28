@@ -99,7 +99,7 @@ const Detail = memo(({show, query, hideDetail}) => {
         columns,
         loading: loading,
         pagination: false,
-        dataSource: detail.transactions,
+        dataSource: detail?.transactions || [],
         size: 'small',
         rowKey: (record, index) => index,
         scroll: {
@@ -164,6 +164,166 @@ const Detail = memo(({show, query, hideDetail}) => {
                             <p>Please wait between 3-4 business days for payment to clear.Some payment methods could take a long time for payment to clear.</p>
                             <p>Transaction ID*: Transaction ID indicates Citcon ID.<br/>
                             Fee*: Service fee will be collected by Citcon later</p>
+                        </div>
+                        <div className={css.paymentSummary}>
+                            {detail?.pending_transactions_info?.subs.length>0 && <div className={css.detailSummary}>
+                                <p className={css.tit}>Payment Pending</p>
+                                <div className={css.scrollSummary}>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>Total</th>{detail?.pending_transactions_info?.subs?.map(item => (<th key={item.vendor}>{item.vendor}</th>))}
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <th>Number of Transactions</th>
+                                                <td>{detail?.pending_transactions_info.total_transactions}</td>
+                                                {detail?.pending_transactions_info.subs.map(item=>(
+                                                    <td>
+                                                    {item.total_transactions}
+                                                    </td>
+                                                ))}
+                                            </tr>
+                                            <tr>
+                                                <th>Subtotal</th>
+                                                <td>
+                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(detail?.pending_transactions_info.gross)}</span>
+                                                </td>
+                                                {detail?.pending_transactions_info.subs.map(item=>(
+                                                <td>
+                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(item.gross)}</span>
+                                                </td>
+                                                ))}
+                                            </tr>
+                                            <tr>
+                                                <th>Tip</th>
+                                                <td>
+                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(detail?.pending_transactions_info.tip_total)}</span>
+                                                </td>
+                                                {detail?.pending_transactions_info.subs.map(item=>(
+                                                <td>
+                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(item.tip_total)}</span>
+                                                </td>
+                                                ))}
+                                            </tr>
+                                            <tr>
+                                                <th>Fee</th>
+                                                <td>
+                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(detail?.pending_transactions_info.fees)}</span>
+                                                </td>
+                                                {detail?.pending_transactions_info.subs.map(item=>(
+                                                <td>
+                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(item.fees)}</span>
+                                                </td>
+                                                ))}
+                                            </tr>
+                                            <tr>
+                                                <th>VAT</th>
+                                                <td>
+                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(detail?.pending_transactions_info.vat_fee)}</span>
+                                                </td>
+                                                {detail?.pending_transactions_info.subs.map(item=>(
+                                                <td>
+                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(item.vat_fee)}</span>
+                                                </td>
+                                                ))}
+                                            </tr>
+                                            <tr>
+                                                <th>Net</th>
+                                                <td>
+                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(detail?.pending_transactions_info.net)}</span>
+                                                </td>
+                                                {detail?.pending_transactions_info.subs.map(item=>(
+                                                <td>
+                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(item.net)}</span>
+                                                </td>
+                                                ))}
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>}
+                            {detail?.settled_transactions_info?.subs.length>0 && <div className={css.detailSummary}>
+                                <p className={css.tit}>Payment Settled</p>
+                                <div className={css.scrollSummary}>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>Total</th>{detail?.settled_transactions_info?.subs?.map(item => (<th key={item.vendor}>{item.vendor}</th>))}
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <th>Number of Transactions</th>
+                                                <td>{detail?.settled_transactions_info.total_transactions}</td>
+                                                {detail?.settled_transactions_info.subs.map(item=>(
+                                                    <td>
+                                                    {item.total_transactions}
+                                                    </td>
+                                                ))}
+                                            </tr>
+                                            <tr>
+                                                <th>Subtotal</th>
+                                                <td>
+                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(detail?.settled_transactions_info.gross)}</span>
+                                                </td>
+                                                {detail?.settled_transactions_info.subs.map(item=>(
+                                                <td>
+                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(item.gross)}</span>
+                                                </td>
+                                                ))}
+                                            </tr>
+                                            <tr>
+                                                <th>Tip</th>
+                                                <td>
+                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(detail?.settled_transactions_info.tip_total)}</span>
+                                                </td>
+                                                {detail?.settled_transactions_info.subs.map(item=>(
+                                                <td>
+                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(item.tip_total)}</span>
+                                                </td>
+                                                ))}
+                                            </tr>
+                                            <tr>
+                                                <th>Fee</th>
+                                                <td>
+                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(detail?.settled_transactions_info.fees)}</span>
+                                                </td>
+                                                {detail?.settled_transactions_info.subs.map(item=>(
+                                                <td>
+                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(item.fees)}</span>
+                                                </td>
+                                                ))}
+                                            </tr>
+                                            <tr>
+                                                <th>VAT</th>
+                                                <td>
+                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(detail?.settled_transactions_info.vat_fee)}</span>
+                                                </td>
+                                                {detail?.settled_transactions_info.subs.map(item=>(
+                                                <td>
+                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(item.vat_fee)}</span>
+                                                </td>
+                                                ))}
+                                            </tr>
+                                            <tr>
+                                                <th>Net</th>
+                                                <td>
+                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(detail?.settled_transactions_info.net)}</span>
+                                                </td>
+                                                {detail?.settled_transactions_info.subs.map(item=>(
+                                                <td>
+                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(item.net)}</span>
+                                                </td>
+                                                ))}
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>}
                         </div>
                     </div>
                 </div>

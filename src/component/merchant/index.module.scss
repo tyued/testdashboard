@@ -129,5 +129,39 @@
             padding: 8px;
         }
     }
+    .paymentSummary{
+        overflow: hidden;
+    }
+    .detailSummary{
+        overflow: hidden;
+        padding-left: 20px;
+        margin-bottom: 20px;
+        .tit{
+            font-size: 20px;
+            font-weight: 300;
+            margin-bottom: 0;
+        }
+        .scrollSummary{
+            width: 100%;
+            overflow: auto;
+            table{
+                th,td{
+                    text-align: left;
+                    white-space: normal !important;
+                    padding: 8px;
+                    font-size: 12px;
+                    color: #444;  
+                }
+                td{
+                    .nowrap{
+                        white-space: nowrap;
+                    } 
+                }
+                thead th{
+                    border-bottom: 1px solid #e2e2e2;
+                }
+            }
+        }    
+    }
 }
 

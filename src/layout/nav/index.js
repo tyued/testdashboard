@@ -1,7 +1,7 @@
 import React, { memo, useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Menu, Tree } from 'antd';
-import { DashboardOutlined, ShopOutlined, ProfileOutlined } from '@ant-design/icons';
+import { DashboardOutlined, ShopOutlined, ProfileOutlined, TableOutlined } from '@ant-design/icons';
 import { connect } from 'react-redux';
 import { find } from 'lodash';
 import MenuList from '../../router/config.js';
@@ -134,6 +134,10 @@ const Nav = memo(({app, dispatch}) => {
             {/* <NavItem><ShopOutlined /> <span className={css.title}>Merchant</span></NavItem> */}
 
             <DirectoryTree rootClassName={css.Tree} onSelect={selectMerchant} loadData={onLoadData} treeData={treeData} />
+
+            <NavItem to='alltransactions'>
+                <div className={css.NavItemBox}><TableOutlined /><span className={css.title}>All Transactions Search</span></div>
+            </NavItem>
             
 
         </div>

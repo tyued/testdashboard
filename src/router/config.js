@@ -2,6 +2,7 @@ import Login from '../component/login';
 import Layout from '../layout';
 import DashBoard from '../component/dashboard';
 import Merchant from '../component/merchant';
+import AllTransactions from '../component/allTransactions';
 
 const Menu = [
     // {
@@ -65,6 +66,12 @@ const Menu = [
                 path:'merchant/:mid',
                 title: 'Merchant Summary',
                 element: <Merchant />,
+                isMenu: false,
+            },
+            {
+                path:'alltransactions',
+                title: 'AllTransactions',
+                element: <AllTransactions />,
                 isMenu: false,
             },
         ]

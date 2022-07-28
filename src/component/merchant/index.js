@@ -227,7 +227,9 @@ const Merchant = memo((props) => {
         loading: loading,
         dataSource: dataList,
         size: 'small',
-        rowKey: (record, index) => index,
+        rowKey: (record) => {
+            return record.date_month || record.transaction_id;
+        },
         scroll: {
             x: searchType==='lookup'? 3000 : 1500,
         },
