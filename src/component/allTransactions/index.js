@@ -2,6 +2,7 @@ import React, { memo, useState, createRef, useEffect,useCallback } from 'react';
 import { Form, Input, Table, DatePicker, Button } from 'antd';
 import moment from 'moment';
 import css from './index.module.scss';
+import { getConfirmation } from '../../utils/request';
 import { getAllTransactionsList } from '../../api';
 import { useDebounce, formatMoney } from '../../utils/tools';
 
@@ -123,13 +124,12 @@ const AllTransactions = memo(() => {
 
     const getAllTransactions = useCallback(
         async (curFormVal) => {
-            console.log('BBBB')
-            console.log(curFormVal)
             let formVal = {
                 startDate: curFormVal.dateRange ? curFormVal.dateRange[0].format('YYYY-MM-DD') : '',
                 endDate: curFormVal.dateRange ? curFormVal.dateRange[1].format('YYYY-MM-DD') : '',
                 searchKey: curFormVal.searchKey,
             }
+            getConfirmation();
             let { data } = await getAllTransactionsList({...query,...formVal});
 
             setDataList(data.totalRecords>0 ? data.transactions : [])
@@ -156,7 +156,6 @@ const AllTransactions = memo(() => {
     }
 
     useEffect(() => {
-        console.log('AAAA')
         getAllTransactions(form.current.getFieldsValue(true))
     }, [])
     
