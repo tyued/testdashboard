@@ -31,6 +31,13 @@ export async function getTransactionsList(data) {
     })
 }
 
+export async function getAllTransactionsList(data) {
+    return request(`${root}/${base}/all_transactions_search`,{
+        method: 'post',
+        data,
+    })
+}
+
 export async function getDetailReport(data) {
     let detailURL;
     if (data.type==='daily'){

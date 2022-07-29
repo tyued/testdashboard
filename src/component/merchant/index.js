@@ -235,8 +235,6 @@ const Merchant = memo((props) => {
         },
     }
 
-    
-
     useEffect(() => {
         if(['daily','monthly'].includes(searchType)) {
             getSummary();
@@ -245,8 +243,7 @@ const Merchant = memo((props) => {
         }
         
     }, [mid, searchType])
-    
-    
+     
     return (
         <div className={css.posMain}>
             <div className={css.merchantMain}>
