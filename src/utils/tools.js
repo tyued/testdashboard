@@ -53,10 +53,13 @@ export function useDebounce(fn, delay, dep = []) {
   }
 
   export function formatMoney(total, currency){
-        if(!currency && !total) return 0
+    //   console.log(currency, total, '56')
+        if(!currency || !total) return 0
         // if(!['KRW', 'JPY'].includes(currency)){
         //     s=(s/100).toFixed(2)
         // }
+        if(currency.split(',').length>1) return total;
+
         return new Intl.NumberFormat('en-US',{
             style: 'currency', 
             currency, 

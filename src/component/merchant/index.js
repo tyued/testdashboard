@@ -77,8 +77,22 @@ const Merchant = memo((props) => {
             width:'150px',
         },{
             title: 'Reference ID',
+            db_column_name: 'reference',
             dataIndex: 'reference',
             width:'150px',
+            disabled: true,
+        },{
+            title: 'Reference ID',
+            db_column_name: 'reference2',
+            dataIndex: 'reference2',
+            width:'150px',
+            disabled: true,
+        },{
+            title: 'Reference ID',
+            db_column_name: 'extral_reference',
+            dataIndex: 'extral_reference',
+            width:'150px',
+            disabled: true,
         },{
             title: 'Date/Time',
             dataIndex: 'time_created',
@@ -88,9 +102,21 @@ const Merchant = memo((props) => {
             dataIndex: 'transaction_type',
             width:'150px',
         },{
+            title: 'tranx status',
+            db_column_name: 'tranx_status',
+            dataIndex: 'tranx_status',
+            width: '100px',
+            disabled: true,
+        },{
             title: 'Payment Method',
             dataIndex: 'payment_method',
             width:'150px',
+        },{
+            title: 'Payment gateway',
+            db_column_name: 'payment_gateway',
+            dataIndex: 'payment_gateway',
+            width: '100px',
+            disabled: true,
         },{
             title: 'Card Number',
             dataIndex: 'buyer_id',
@@ -100,14 +126,36 @@ const Merchant = memo((props) => {
             dataIndex: 'method_trans_id',
             width:'150px',
         },{
+            title: 'Auth Currency',
+            db_column_name: 'auth_currency',
+            width: '100px',
+            dataIndex: 'auth_currency',
+            disabled: true,
+        },{
             title: 'Total',
             width:'150px',
             render: ({ currency, total }) => {
                 return `${formatMoney((total).toFixed(2), currency)}`
             }
         },{
+            title: 'Auth Amount',
+            db_column_name: 'auth_amount',
+            render: ({ currency, auth_amount }) => {
+                return `${formatMoney((auth_amount).toFixed(2), currency)}`
+            },
+            width: '150px',
+            disabled: true,
+        },{
             title: 'Action',
             width:'150px',
+        },{
+            title: 'Amount Captured',
+            db_column_name: 'amount_captured',
+            render: ({ currency, amount_captured }) => {
+                return `${formatMoney((amount_captured).toFixed(2), currency)}`
+            },
+            width: '150px',
+            disabled: true,
         },{
             title: 'Sales',
             width:'150px',
@@ -141,9 +189,11 @@ const Merchant = memo((props) => {
             dataIndex: 'original_merchant_name_english',
             width:'150px',
         }
-    ] 
+    ]
+    
     const [searchType, setSearchType] = useState('daily');
     const [columns, setColumns] = useState(DailyColumns);
+    const [cusColumns, setCusColumns] = useState([]);
     const [dataList, setDataList] = useState([]);
     const [loading, setLoading] = useState(false);
     const [merchantSetting, setMerchantSetting] = useState({});
@@ -191,33 +241,50 @@ const Merchant = memo((props) => {
             return 3000
         } else {
             return columns.reduce((num, item) => {
-                // console.log(num,item)
                 return num += parseInt(item.disabled ? 0 : item.width||0)
             },0)
         }
     }
 
-    const checkColumns = (data, columns) => {
+    const disabledColumns = (disabledArr, columns) => {
         let changeItem = [];
+        changeItem = filter(columns, (o)=>{
+            return disabledArr.includes(o.title)
+        });
+        changeItem.forEach(item=>{
+            update(item, 'disabled', (e)=>true);
+        })
+    }
+
+    const displayAndModifyColumns = (showColumns, columns) => {
+        filter(columns, (o)=>{
+            let cItem = find(showColumns, {db_column_name: o.db_column_name})
+            if(cItem){
+                o.disabled = false;
+                o.title = cItem.ui_column_name;
+            }
+            return true
+        });
+    }
+
+    const checkColumns = (data, columns) => {
         switch (searchType) {
             case 'daily':
                 if(data.isElavonSite){
-                    changeItem = filter(columns, (o)=>{
-                        return ['Net'].includes(o.title)
-                    });
-                    // console.log(changeItem, 'changeItem')
-                    changeItem.forEach(item=>{
-                        update(item, 'disabled', (e)=>true);
-                    })
+                    disabledColumns(['Net'], columns);
                 }
                 if(!mid){
-                    changeItem = filter(columns, (o)=>{
-                        return ['Status','Payment Methods'].includes(o.title)
-                    });
-                    changeItem.forEach(item=>{
-                        update(item, 'disabled', (e)=>true);
-                    })
+                    disabledColumns(['Status','Payment Methods'], columns);
                 }
+                break;
+            case 'monthly':
+                if(!mid){
+                    disabledColumns(['Status','Payment Methods'], columns);
+                }
+                break;
+            case 'lookup':
+                let showColumns = filter(cusColumns,{is_shown: 1});
+                displayAndModifyColumns(showColumns, columns);
                 break;
             default:
                 break;
@@ -229,8 +296,9 @@ const Merchant = memo((props) => {
             hierarchy_user_id: sessionStorage.getItem('curHierarchyId'),
             session_id: sessionStorage.getItem('session_id'),
         }
-        let res = await getColumns(params);
-        console.log(res, 'res-line-189'); 
+        let { data } = await getColumns(params);
+        setCusColumns(data.data);
+        console.log(data.data, 'res-line-189'); 
     }
 
     const getSummary  = async () => {
@@ -273,9 +341,10 @@ const Merchant = memo((props) => {
             selectedMid: sessionStorage.getItem('curHierarchyId'),
             sessionId: sessionStorage.getItem('session_id'),
         }
-        let res = await getTransactionsList(params);
+        let { data } = await getTransactionsList(params);
+        checkColumns(data, LookupColumns);
         batchedUpdates(async ()=>{
-            setDataList(res.data.transactions);
+            setDataList(data.transactions);
             setColumns(LookupColumns);
             setLoading(false);
         })
@@ -298,10 +367,10 @@ const Merchant = memo((props) => {
     }
 
     useEffect(() => {
-        getColumnsByMid();
         if(['daily','monthly'].includes(searchType)) {
             getSummary();
         } else if(['lookup'].includes(searchType)) {
+            getColumnsByMid();
             getTransactions();
         }
         
