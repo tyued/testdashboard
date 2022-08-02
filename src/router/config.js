@@ -69,6 +69,12 @@ const Menu = [
                 isMenu: false,
             },
             {
+                path:'merchant/',
+                title: 'Merchant Summary',
+                element: <Merchant />,
+                isMenu: false,
+            },
+            {
                 path:'alltransactions',
                 title: 'AllTransactions',
                 element: <AllTransactions />,

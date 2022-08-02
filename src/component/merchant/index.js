@@ -3,9 +3,9 @@ import { unstable_batchedUpdates as batchedUpdates } from 'react-dom';
 import { useParams } from 'react-router-dom';
 import { Radio, Table, Tag } from 'antd';
 import css from './index.module.scss';
-import { getSummaryList, getTransactionsList } from '../../api/index';
+import { getSummaryList, getTransactionsList, getColumns } from '../../api/index';
 import { formatMoney } from '../../utils/tools';
-import { reject } from 'lodash';
+import { reject, find, filter, update } from 'lodash';
 import Detail from './detail';
 
 
@@ -16,10 +16,15 @@ const Merchant = memo((props) => {
         {
             title: 'Date',
             // dataIndex: 'date_month',
+            textWrap: 'word-break',
             key: 'date_month',
-            width:'250px',
+            width:'220px',
             render: (row) => {
-                return <span className='linkSpan' onClick={()=>showDetail(row)}>{row.date_month}</span>
+                if(mid){
+                    return <span className='linkSpan' onClick={()=>showDetail(row)}>{row.date_month}</span>
+                }else{
+                    return row.date_month
+                }
             },
             fixed: 'left',
         },{
@@ -31,13 +36,13 @@ const Merchant = memo((props) => {
             title: 'Gross',
             width:'170px',
             render: ({ currency, gross }) => {
-                return `${currency} ${formatMoney((gross/100).toFixed(2))}`;
+                return `${formatMoney((gross).toFixed(2), currency)}`;
             },
         },{
             title: 'Net',
             width:'170px',
             render: ({ currency, net }) => {
-                return `${currency} ${formatMoney((net/100).toFixed(2))}`;
+                return `${formatMoney((net).toFixed(2), currency)}`;
             },
         },{
             title: 'Status',
@@ -49,6 +54,7 @@ const Merchant = memo((props) => {
         },{
             title: 'Payment Methods',
             dataIndex: 'vendor',
+            width: '250px'
         }
     ]
 
@@ -97,7 +103,7 @@ const Merchant = memo((props) => {
             title: 'Total',
             width:'150px',
             render: ({ currency, total }) => {
-                return `${currency} ${formatMoney((total/100).toFixed(2))}`
+                return `${formatMoney((total).toFixed(2), currency)}`
             }
         },{
             title: 'Action',
@@ -106,13 +112,13 @@ const Merchant = memo((props) => {
             title: 'Sales',
             width:'150px',
             render: ({ currency, sales }) => {
-                return `${currency} ${formatMoney((sales/100).toFixed(2))}`
+                return `${formatMoney((sales).toFixed(2), currency)}`
             }
         },{
             title: 'Tip',
             width:'150px',
             render: ({ currency, tip }) => {
-                return `${currency} ${formatMoney(((tip| 0)/100).toFixed(2))}`
+                return `${formatMoney(((tip| 0)).toFixed(2), currency)}`
             }
         },{
             title: 'Login Code',
@@ -135,12 +141,12 @@ const Merchant = memo((props) => {
             dataIndex: 'original_merchant_name_english',
             width:'150px',
         }
-    ]
-    
+    ] 
     const [searchType, setSearchType] = useState('daily');
     const [columns, setColumns] = useState(DailyColumns);
     const [dataList, setDataList] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [merchantSetting, setMerchantSetting] = useState({});
     const [detailProps,setDetailProps] = useState({show: false});
 
     const hideDetail = useCallback(
@@ -180,20 +186,75 @@ const Merchant = memo((props) => {
         // }
     }
 
+    const computeWidth = () => {
+        if (searchType==='lookup') {
+            return 3000
+        } else {
+            return columns.reduce((num, item) => {
+                // console.log(num,item)
+                return num += parseInt(item.disabled ? 0 : item.width||0)
+            },0)
+        }
+    }
+
+    const checkColumns = (data, columns) => {
+        let changeItem = [];
+        switch (searchType) {
+            case 'daily':
+                if(data.isElavonSite){
+                    changeItem = filter(columns, (o)=>{
+                        return ['Net'].includes(o.title)
+                    });
+                    // console.log(changeItem, 'changeItem')
+                    changeItem.forEach(item=>{
+                        update(item, 'disabled', (e)=>true);
+                    })
+                }
+                if(!mid){
+                    changeItem = filter(columns, (o)=>{
+                        return ['Status','Payment Methods'].includes(o.title)
+                    });
+                    changeItem.forEach(item=>{
+                        update(item, 'disabled', (e)=>true);
+                    })
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    const getColumnsByMid = async () => {
+        let params = {
+            hierarchy_user_id: sessionStorage.getItem('curHierarchyId'),
+            session_id: sessionStorage.getItem('session_id'),
+        }
+        let res = await getColumns(params);
+        console.log(res, 'res-line-189'); 
+    }
+
     const getSummary  = async () => {
         setLoading(true);
         let params = {
             date_month: '',
-            hierarchy_user_id: sessionStorage.getItem('curHierarchyId'),
-            merchantId: mid,
+            hierarchy_user_id: sessionStorage.getItem('curHierarchyId') || sessionStorage.getItem('hierarchyId'),
+            merchantId: mid || '',
             page_number: 0,
             row_count: 10,
             search_type: searchType,
             session_id: sessionStorage.getItem('session_id'),
         }
-        let res = await getSummaryList(params);
+        let { data } = await getSummaryList(params);
+
+        checkColumns(data, DailyColumns);
+        // console.log(DailyColumns, 'DailyColumns');
+
         batchedUpdates(async ()=>{
-            setDataList(res.data.transactions);
+            setMerchantSetting({
+                ...merchantSetting,
+                isElavonSite: data.isElavonSite,
+            })
+            setDataList(data.transactions);
             setColumns(DailyColumns);
             setLoading(false);
         })
@@ -204,7 +265,7 @@ const Merchant = memo((props) => {
         let params = {
             startDate: "",
             endDate: "",
-            hierarchy: sessionStorage.getItem('hierarchyId'),
+            hierarchy: sessionStorage.getItem('hierarchyId') || sessionStorage.getItem('hierarchyId'),
             merchantId: mid,
             pageNumber: 0,
             rowCount: 10,
@@ -222,7 +283,7 @@ const Merchant = memo((props) => {
 
     const tableProps = {
         columns: reject(columns, (o) => {
-            return o.disableDependency?.includes(searchType)
+            return o.disableDependency?.includes(searchType) || o.disabled
         }),
         loading: loading,
         dataSource: dataList,
@@ -231,18 +292,20 @@ const Merchant = memo((props) => {
             return record.date_month || record.transaction_id;
         },
         scroll: {
-            x: searchType==='lookup'? 3000 : 1500,
+            // x: searchType==='lookup'? 3000 : 1000,
+            x: computeWidth(),
         },
     }
 
     useEffect(() => {
+        getColumnsByMid();
         if(['daily','monthly'].includes(searchType)) {
             getSummary();
         } else if(['lookup'].includes(searchType)) {
             getTransactions();
         }
         
-    }, [mid, searchType])
+    }, [mid, searchType, sessionStorage.getItem('curHierarchyId')])
      
     return (
         <div className={css.posMain}>
@@ -261,7 +324,10 @@ const Merchant = memo((props) => {
             </div>
 
             <Detail {...detailProps}></Detail>
-
+            {merchantSetting.isElavonSite && <div className={css.elavon_tip}>
+                {searchType==='monthly' && <span>*: This number is provided based on the assumption that the last day of month is your billing date. <br />Otherwise, please refer to Elavon dashboard for detail information.</span>}
+                {searchType==='daily' && <span>*: Please contact Elavon if you have any payment questions</span>}
+            </div>}
         </div>
     )
 })

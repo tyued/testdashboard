@@ -32,7 +32,7 @@ export const getConfirmation = (mes='', callback = () => {}) => {
 
 service.interceptors.request.use(
     config => {
-        console.log(config, 'config')
+        // console.log(config, 'config')
         let reqData = '';
         reqData = config.url + config.method + JSON.stringify(config.params||config.data);
         removePending(reqData, true);
@@ -49,7 +49,7 @@ service.interceptors.request.use(
 
 service.interceptors.response.use(
     response => {
-        console.log(response, '这里是结果')
+        // console.log(response, '这里是结果')
         // return response
         if(response.status === 200){
             return { data: response.data }

@@ -85,13 +85,15 @@ const Nav = memo(({app, dispatch}) => {
     }
 
     const selectMerchant = (key, { selectedNodes, node }) => {
-        if(node.merchantId){
-            sessionStorage.setItem('curHierarchyId', key);
-            history(`/merchant/${node.merchantId}`);
-        }
-        console.log(key, 'key');
-        console.log(selectedNodes, 'selectedNodes');
-        console.log(node, 'node');
+        if(node.expanded) return;
+        // console.log(key, 'key---nav line-88')
+        // if(node.merchantId){
+        sessionStorage.setItem('curHierarchyId', key);
+        history(`/merchant/${node.merchantId||''}`);
+        // }
+        // console.log(key, 'key');
+        // console.log(selectedNodes, 'selectedNodes');
+        // console.log(node, 'node');
     }
   
 
@@ -138,8 +140,6 @@ const Nav = memo(({app, dispatch}) => {
             <NavItem to='alltransactions'>
                 <div className={css.NavItemBox}><TableOutlined /><span className={css.title}>All Transactions Search</span></div>
             </NavItem>
-            
-
         </div>
     )
 })

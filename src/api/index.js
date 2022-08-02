@@ -17,6 +17,13 @@ export async function getMultilayer(data) {
     })
 }
 
+export async function getColumns(data) {
+    return request(`${root}/${base}/system/gettranxcolumns`,{
+        method: 'post',
+        data,
+    })
+}
+
 export async function getSummaryList(data) {
     return request(`${root}/${base}/tranx/summary`,{
         method: 'post',

@@ -52,21 +52,36 @@ export function useDebounce(fn, delay, dep = []) {
     }, [current, delay])
   }
 
-  export function formatMoney(s, type) {
-    if (/[^0-9\.]/.test(s)) return "0";
-    if (s === null || s === "") return "0";
-    s = s.toString().replace(/^(\d*)$/, "$1.");
-    s = (s + "00").replace(/(\d*\.\d\d)\d*/, "$1");
-    s = s.replace(".", ",");
-    var re = /(\d)(\d{3},)/;
-    while (re.test(s))
-        s = s.replace(re, "$1,$2");
-    s = s.replace(/,(\d\d)$/, ".$1");
-    if (type === 0) {
-        var a = s.split(".");
-        if (a[1] === "00") {
-            s = a[0];
-        }
-    }
-    return s;
-}
+  export function formatMoney(total, currency){
+        if(!currency && !total) return 0
+        // if(!['KRW', 'JPY'].includes(currency)){
+        //     s=(s/100).toFixed(2)
+        // }
+        return new Intl.NumberFormat('en-US',{
+            style: 'currency', 
+            currency, 
+        }).format(total);
+  }
+
+//   export function formatMoney(s, currency, type) {
+//     if(!['KRW', 'JPY'].includes(currency)){
+//         s=(s/100).toFixed(2)
+//     }
+
+//     if (/[^0-9\.-]/.test(s)) return "0";
+//     if (s === null || s === "") return "0";
+//     s = s.toString().replace(/^(\d*)$/, "$1.");
+//     s = (s + "00").replace(/(\d*\.\d\d)\d*/, "$1");
+//     s = s.replace(".", ",");
+//     var re = /(\d)(\d{3},)/;
+//     while (re.test(s))
+//         s = s.replace(re, "$1,$2");
+//     s = s.replace(/,(\d\d)$/, ".$1");
+//     if (type === 0) {
+//         var a = s.split(".");
+//         if (a[1] === "00") {
+//             s = a[0];
+//         }
+//     }
+//     return s;
+// }

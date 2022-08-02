@@ -16,7 +16,8 @@ const Detail = memo(({show, query, hideDetail}) => {
         {
             title: 'Transaction ID',
             dataIndex: 'transaction_id',
-            width:'200px',
+            key: 'transaction_id',
+            width: '200px',
         },{
             title: 'Reference ID',
             dataIndex: 'reference',
@@ -117,7 +118,6 @@ const Detail = memo(({show, query, hideDetail}) => {
         }
     }, [query, show])
 
-
     useEffect(() => {
         
         // setTimeout(setSelfShow(true),500)
@@ -157,7 +157,7 @@ const Detail = memo(({show, query, hideDetail}) => {
                 <div className={css.detailTransactionTable}>
                     <Table {...detailProps}></Table>
                     <div className={css.netSum}>
-                        <strong>Net of the day: {detail?.currency} {formatMoney(detail?.total_net)}</strong>
+                        <strong>Net of the day: {detail?.currency} {formatMoney(detail?.total_net, detail?.currency)}</strong>
                     </div>
                     <div className={css.row}>
                         <div className={css.explain}>
@@ -181,7 +181,7 @@ const Detail = memo(({show, query, hideDetail}) => {
                                                 <th>Number of Transactions</th>
                                                 <td>{detail?.pending_transactions_info.total_transactions}</td>
                                                 {detail?.pending_transactions_info.subs.map(item=>(
-                                                    <td>
+                                                    <td key={Math.random()}>
                                                     {item.total_transactions}
                                                     </td>
                                                 ))}
@@ -189,55 +189,55 @@ const Detail = memo(({show, query, hideDetail}) => {
                                             <tr>
                                                 <th>Subtotal</th>
                                                 <td>
-                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(detail?.pending_transactions_info.gross)}</span>
+                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(detail?.pending_transactions_info.gross, detail?.currency)}</span>
                                                 </td>
                                                 {detail?.pending_transactions_info.subs.map(item=>(
-                                                <td>
-                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(item.gross)}</span>
+                                                <td key={Math.random()}>
+                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(item.gross, detail?.currency)}</span>
                                                 </td>
                                                 ))}
                                             </tr>
                                             <tr>
                                                 <th>Tip</th>
                                                 <td>
-                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(detail?.pending_transactions_info.tip_total)}</span>
+                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(detail?.pending_transactions_info.tip_total, detail?.currency)}</span>
                                                 </td>
                                                 {detail?.pending_transactions_info.subs.map(item=>(
-                                                <td>
-                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(item.tip_total)}</span>
+                                                <td key={Math.random()}>
+                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(item.tip_total, detail?.currency)}</span>
                                                 </td>
                                                 ))}
                                             </tr>
                                             <tr>
                                                 <th>Fee</th>
                                                 <td>
-                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(detail?.pending_transactions_info.fees)}</span>
+                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(detail?.pending_transactions_info.fees, detail?.currency)}</span>
                                                 </td>
                                                 {detail?.pending_transactions_info.subs.map(item=>(
-                                                <td>
-                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(item.fees)}</span>
+                                                <td key={Math.random()}>
+                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(item.fees, detail?.currency)}</span>
                                                 </td>
                                                 ))}
                                             </tr>
                                             <tr>
                                                 <th>VAT</th>
                                                 <td>
-                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(detail?.pending_transactions_info.vat_fee)}</span>
+                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(detail?.pending_transactions_info.vat_fee, detail?.currency)}</span>
                                                 </td>
                                                 {detail?.pending_transactions_info.subs.map(item=>(
-                                                <td>
-                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(item.vat_fee)}</span>
+                                                <td key={Math.random()}>
+                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(item.vat_fee, detail?.currency)}</span>
                                                 </td>
                                                 ))}
                                             </tr>
                                             <tr>
                                                 <th>Net</th>
                                                 <td>
-                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(detail?.pending_transactions_info.net)}</span>
+                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(detail?.pending_transactions_info.net, detail?.currency)}</span>
                                                 </td>
                                                 {detail?.pending_transactions_info.subs.map(item=>(
-                                                <td>
-                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(item.net)}</span>
+                                                <td key={Math.random()}>
+                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(item.net, detail?.currency)}</span>
                                                 </td>
                                                 ))}
                                             </tr>
@@ -260,7 +260,7 @@ const Detail = memo(({show, query, hideDetail}) => {
                                                 <th>Number of Transactions</th>
                                                 <td>{detail?.settled_transactions_info.total_transactions}</td>
                                                 {detail?.settled_transactions_info.subs.map(item=>(
-                                                    <td>
+                                                    <td key={Math.random()}>
                                                     {item.total_transactions}
                                                     </td>
                                                 ))}
@@ -268,55 +268,55 @@ const Detail = memo(({show, query, hideDetail}) => {
                                             <tr>
                                                 <th>Subtotal</th>
                                                 <td>
-                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(detail?.settled_transactions_info.gross)}</span>
+                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(detail?.settled_transactions_info.gross, detail?.currency)}</span>
                                                 </td>
                                                 {detail?.settled_transactions_info.subs.map(item=>(
-                                                <td>
-                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(item.gross)}</span>
+                                                <td key={Math.random()}>
+                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(item.gross, detail?.currency)}</span>
                                                 </td>
                                                 ))}
                                             </tr>
                                             <tr>
                                                 <th>Tip</th>
                                                 <td>
-                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(detail?.settled_transactions_info.tip_total)}</span>
+                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(detail?.settled_transactions_info.tip_total, detail?.currency)}</span>
                                                 </td>
                                                 {detail?.settled_transactions_info.subs.map(item=>(
-                                                <td>
-                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(item.tip_total)}</span>
+                                                <td key={Math.random()}>
+                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(item.tip_total, detail?.currency)}</span>
                                                 </td>
                                                 ))}
                                             </tr>
                                             <tr>
                                                 <th>Fee</th>
                                                 <td>
-                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(detail?.settled_transactions_info.fees)}</span>
+                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(detail?.settled_transactions_info.fees, detail?.currency)}</span>
                                                 </td>
                                                 {detail?.settled_transactions_info.subs.map(item=>(
-                                                <td>
-                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(item.fees)}</span>
+                                                <td key={Math.random()}>
+                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(item.fees, detail?.currency)}</span>
                                                 </td>
                                                 ))}
                                             </tr>
                                             <tr>
                                                 <th>VAT</th>
                                                 <td>
-                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(detail?.settled_transactions_info.vat_fee)}</span>
+                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(detail?.settled_transactions_info.vat_fee, detail?.currency)}</span>
                                                 </td>
                                                 {detail?.settled_transactions_info.subs.map(item=>(
-                                                <td>
-                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(item.vat_fee)}</span>
+                                                <td key={Math.random()}>
+                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(item.vat_fee, detail?.currency)}</span>
                                                 </td>
                                                 ))}
                                             </tr>
                                             <tr>
                                                 <th>Net</th>
                                                 <td>
-                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(detail?.settled_transactions_info.net)}</span>
+                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(detail?.settled_transactions_info.net, detail?.currency)}</span>
                                                 </td>
                                                 {detail?.settled_transactions_info.subs.map(item=>(
-                                                <td>
-                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(item.net)}</span>
+                                                <td key={Math.random()}>
+                                                    <span className={css.nowrap}>{detail?.currency} {formatMoney(item.net, detail?.currency)}</span>
                                                 </td>
                                                 ))}
                                             </tr>

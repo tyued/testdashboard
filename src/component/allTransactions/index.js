@@ -16,6 +16,7 @@ const AllTransactions = memo(() => {
         rowCount: 10,
         download: false,
     });
+    const [loading, setLoading] = useState(false);
 
     const [dataList, setDataList] = useState([]);
 
@@ -130,14 +131,15 @@ const AllTransactions = memo(() => {
                 searchKey: curFormVal.searchKey,
             }
             getConfirmation();
+            setLoading(true);
             let { data } = await getAllTransactionsList({...query,...formVal});
 
             setDataList(data.totalRecords>0 ? data.transactions : [])
+            setLoading(false);
             // console.log(res, 'allTransaction Res')
         },
         [query],
     )
-     
 
     const changeForm = useDebounce((itemVal, formVal) => {
         getAllTransactions(formVal)
@@ -146,6 +148,7 @@ const AllTransactions = memo(() => {
     const tableProps = {
         columns:columns,
         dataSource: dataList,
+        loading:loading,
         size: 'small',
         rowKey: (record) => {
             return record.transaction_id;
@@ -158,7 +161,7 @@ const AllTransactions = memo(() => {
     useEffect(() => {
         getAllTransactions(form.current.getFieldsValue(true))
     }, [])
-    
+
     return (
         <div className={css.posMain}>
             <div className={css.summaryTable}>

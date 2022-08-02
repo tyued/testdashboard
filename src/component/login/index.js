@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import css from './index.module.scss';
-import { Button, Input, Form } from 'antd';
+import { Button, Input, Form, notification } from 'antd';
 import { MailOutlined, LockOutlined } from '@ant-design/icons';
 import { connect } from 'react-redux';
 
@@ -14,11 +14,19 @@ const Login = ({form, dispatch}) => {
 
   const handleLogin = useDebounce(async (values) => {
     
-    let res = await login(values);
-    sessionStorage.setItem('hierarchyId', res.data.hierarchy);
-    sessionStorage.setItem('session_id', res.data.session_id);
-    sessionStorage.setItem('hierarchyName', res.data.hierarchyName);
-    history('/dashboard')
+    let { data } = await login(values);
+    if(data.code===200){
+      sessionStorage.setItem('hierarchyId', data.hierarchy);
+      sessionStorage.setItem('session_id', data.session_id);
+      sessionStorage.setItem('hierarchyName', data.hierarchyName);
+      history('/dashboard');
+    } else {
+      notification.error({
+        message: data.data.msg,
+        // description: data.data.msg,
+        placement: 'bottomRight',
+      })
+    }
   },500)
 
   return (
